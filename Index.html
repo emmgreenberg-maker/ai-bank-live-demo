@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Bank – Live Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top, #0a1a2f, #020812);
+      color: #e6f0ff;
+      overflow-x: hidden;
+    }
+
+    header {
+      padding: 24px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.05);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 30px rgba(0,150,255,0.15);
+      animation: pulse 4s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 20px rgba(0,150,255,0.15); }
+      50% { box-shadow: 0 0 40px rgba(0,200,255,0.35); }
+      100% { box-shadow: 0 0 20px rgba(0,150,255,0.15); }
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+    }
+
+    .dot {
+      width: 14px;
+      height: 14px;
+      background: #00ffcc;
+      border-radius: 50%;
+      animation: blink 1.2s infinite;
+    }
+
+    @keyframes blink {
+      0% { opacity: 0.2; }
+      50% { opacity: 1; }
+      100% { opacity: 0.2; }
+    }
+
+    .log {
+      margin-top: 16px;
+      font-size: 15px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .timestamp {
+      margin-top: 10px;
+      font-size: 13px;
+      opacity: 0.7;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 13px;
+      opacity: 0.5;
+      padding: 30px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  AI Bank – Live Market Intelligence Demo
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <div class="status">
+      <div class="dot"></div>
+      <div id="statusText">AI engine running…</div>
+    </div>
+
+    <div class="log" id="aiOutput">
+Waiting for first live update…
+    </div>
+
+    <div class="timestamp" id="timeOutput"></div>
+  </div>
+
+</div>
+
+<footer>
+  Autonomous AI Banking System • Live Demo
+</footer>
+
+<script>
+  const webhookURL = "https://hook.eu1.make.com/n6quidf7b8unumtx94ap6g07yd3v72sx";
+
+  async function fetchLiveUpdate() {
+    const statusText = document.getElementById("statusText");
+    const output = document.getElementById("aiOutput");
+    const timeOutput = document.getElementById("timeOutput");
+
+    statusText.textContent = "AI scanning global markets…";
+
+    try {
+      const response = await fetch(webhookURL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          source: "GitHub Live Demo",
+          action: "scan_markets",
+          timestamp: new Date().toISOString()
+        })
+      });
+
+      let text;
+      try {
+        const data = await response.json();
+        text = JSON.stringify(data, null, 2);
+      } catch {
+        text = "Live signal received from Make (no JSON payload)";
+      }
+
+      output.textContent = "AI Update:\n" + text;
+      timeOutput.textContent = "Last update: " + new Date().toLocaleString();
+
+      statusText.textContent = "AI active • Monitoring continues";
+
+    } catch (error) {
+      output.textContent = "Connection error – retrying automatically…";
+      statusText.textContent = "Reconnecting to AI engine…";
+    }
+  }
+
+  fetchLiveUpdate();
+  setInterval(fetchLiveUpdate, 7000);
+</script>
+
+</body>
+</html>
